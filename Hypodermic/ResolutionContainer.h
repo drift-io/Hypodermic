@@ -26,6 +26,19 @@ namespace Hypodermic
     class ResolutionContainer : public IResolutionContainer
     {
     public:
+
+        ~ResolutionContainer() override
+        {
+            clearActivatedInstances();
+        }
+        
+        // Add method to explicitly clear activated instances
+        void clearActivatedInstances()
+        {
+            std::lock_guard<decltype(m_mutex)> lock(m_mutex);
+            m_activationRegistriesByRegistration.clear();
+        }
+    
         std::shared_ptr< void > getOrCreateComponent(const TypeAliasKey& typeAliasKey, const std::shared_ptr< IRegistration >& registration, ResolutionContext& resolutionContext) override
         {
             auto& resolutionStack = resolutionContext.resolutionStack();
